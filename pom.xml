@@ -15,7 +15,7 @@
     <artifactId>school-management-backend-b326-leven</artifactId>
     <version>0.0.1-SNAPSHOT</version>
     <name>school-management-backend-b326-leven</name>
-    <description>school-management-backend-b326</description>
+    <description>school-management-backend-b326-leven</description>
 
     <dependencies>
         <dependency>
