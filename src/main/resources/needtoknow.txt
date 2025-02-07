@@ -1,5 +1,7 @@
 java and maven configuratuion settings (intelij + OS)
+mvn life cycle + plugin/dependency management
 
+DATA base view Index coloms Triggers ne demek bunlar Data basedeki Tablerin icinde
 
 
 
