@@ -20,7 +20,8 @@ DATA base view Index coloms Triggers ne demek bunlar Data basedeki Tablerin icin
    - Uygulamanın çalışmasını izlemek ve hata ayıklamak için kullanılan loglama sistemini ifade eder.
 
 5. **CONFIGURATION (Konfigürasyon - Yapılandırma)**
-   - Uygulamanın yapılandırma ayarlarını içeren bölümdür. Örneğin, Spring Boot'ta `application.properties` veya `application.yml` dosyalarında yapılan ayarlamalar burada kullanılır.
+   - Uygulamanın yapılandırma ayarlarını içeren bölümdür. Örneğin, Spring Boot'ta `application.properties` veya `application.yml` dosyalarında
+   yapılan ayarlamalar burada kullanılır.
 
 6. **EXCEPTION HANDLING (İstisna Yönetimi - Hata Yönetimi)**
    - Uygulamada oluşabilecek hataları yakalamak ve yönetmek için kullanılan mekanizmadır.
@@ -63,7 +64,8 @@ DATA base view Index coloms Triggers ne demek bunlar Data basedeki Tablerin icin
 ### **Diğer Yardımcı Bileşenler**
 
 15. **validator (Doğrulayıcı)**
-    - Kullanıcıdan gelen verilerin doğruluğunu kontrol etmek için kullanılır. Örneğin, `@Valid` veya `@NotNull` gibi Spring doğrulama anotasyonları burada devreye girer.
+    - Kullanıcıdan gelen verilerin doğruluğunu kontrol etmek için kullanılır. Örneğin, `@Valid` veya `@NotNull` gibi Spring doğrulama
+    anotasyonları burada devreye girer.
 
 16. **pageableHelper (Sayfalama Yardımcısı)**
     - Büyük veri setlerini sayfalama (pagination) ile yönetmek için kullanılan bir yardımcı sınıftır. Spring Data JPA'nın `Pageable` arayüzü kullanılabilir.
@@ -78,3 +80,35 @@ Bu görsel, tipik bir **Spring Boot çok katmanlı mimari yapısını** gösteri
 - **Exception Handling, Logging ve Configuration** uygulamanın genel yönetimini sağlıyor.
 
 Bu mimari genellikle **Spring Boot Rest API projelerinde** kullanılır.
+
+
+
+//*****************************************************************************************************************************************
+Java'da "builder" deseni, özellikle karmaşık nesne oluşturma süreçlerini daha okunabilir ve yönetilebilir hale getirmek için kullanılan
+bir tasarım desenidir. Bu deseni uygulamak için elle kod yazılabileceği gibi, Lombok gibi kütüphaneler de @Builder gibi anotasyonlar sunarak
+bu işlemi otomatikleştirir.
+
+Lombok @Builder Anotasyonu Nedir?
+@Builder anotasyonu, Lombok kütüphanesi tarafından sağlanır ve bir sınıf veya metod için otomatik olarak bir "builder" sınıfı oluşturur.
+Bu sayede, sınıfınızın nesnelerini daha okunabilir, zincirleme (fluent) metod çağrılarıyla oluşturabilirsiniz. Özellikle çok sayıda parametreye
+sahip veya bazı parametreleri opsiyonel olan sınıflar için bu desen oldukça kullanışlıdır.
+
+Temel Özellikleri
+Okunabilir Kod: Nesneleri oluştururken, hangi değerin hangi alanı temsil ettiğini metod isimleri sayesinde rahatça görebilirsiniz.
+Zincirleme (Fluent) Kullanım: Oluşturma sürecinde metodları zincirleme şekilde çağırarak daha temiz bir kod yazabilirsiniz.
+Opsiyonel Parametreler: Farklı kombinasyonlarda parametrelerin verilmesine olanak tanır, böylece birden fazla constructor yazma
+gereksinimini ortadan kaldırır.
+
+Builder Deseninin Avantajları
+İnşa Sürecinin Yönetilmesi: Karmaşık nesnelerin adım adım inşasını sağlar.
+Immutable Nesneler: Genellikle immutable (değişmez) nesneler oluştururken tercih edilir, çünkü nesne oluşturulduktan sonra alanlar değiştirilemez.
+Kod Tekrarını Azaltır: Farklı parametre kombinasyonları için birden fazla constructor yazmak yerine tek bir builder yapısı kullanılır.
+Sonuç
+Java'da @Builder anotasyonu, özellikle Lombok kütüphanesi ile birlikte kullanıldığında, nesne oluşturma işlemlerini kolaylaştırır,
+kodun okunabilirliğini artırır ve bakımı daha da basitleştirir. Builder desenini uygulamak manuel olarak da yapılabilir ancak Lombok sayesinde
+bu işlem otomatikleştirilir ve yazılan kod miktarı azalır.
+
+
+//*****************************************************************************************************************************************
+
+
