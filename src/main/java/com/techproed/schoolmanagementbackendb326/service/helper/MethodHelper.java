@@ -27,4 +27,13 @@ public class MethodHelper {
         }
     }
 
+    public User loadByUsername(String username) {
+        User user = userRepository.findByUsername(username);
+        if(user == null){
+            throw new ResourceNotFoundException(String.format(ErrorMessages.NOT_FOUND_USER_MESSAGE, username));
+        }
+        return user;
+    }
+
+
 }
