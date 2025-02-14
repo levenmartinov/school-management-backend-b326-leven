@@ -12,15 +12,17 @@ import com.techproed.schoolmanagementbackendb326.repository.user.UserRepository;
 import com.techproed.schoolmanagementbackendb326.service.helper.MethodHelper;
 import com.techproed.schoolmanagementbackendb326.service.helper.PageableHelper;
 import com.techproed.schoolmanagementbackendb326.service.validator.UniquePropertyValidator;
-import java.util.List;
-import java.util.stream.Collectors;
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
+
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 
 @Service
 @RequiredArgsConstructor
@@ -42,7 +44,7 @@ public class UserService {
                 userRequest.getEmail()
         );
         //DTO->entity mapping
-        User userToSave = userMapper.mapUserRequestToUser(userRequest,userRole);
+        User userToSave = userMapper.mapUserRequestToUser(userRequest, userRole);
         //save operation
         User savedUser = userRepository.save(userToSave);
         //entity ->DTO mapping
@@ -75,19 +77,20 @@ public class UserService {
     public Page<UserResponse> getUserByPage(int page, int size, String sort, String type,
                                             String userRole) {
         Pageable pageable = pageableHelper.getPageable(page, size, sort, type);
-        return userRepository.findUserByUserRoleQuery(userRole,pageable)
+        return userRepository.findUserByUserRoleQuery(userRole, pageable)
                 .map(userMapper::mapUserToUserResponse);
     }
 
     public ResponseMessage<UserResponse> updateUserById(UserRequest userRequest, Long userId) {
+
         //validate if user exist
         User userFromDb = methodHelper.isUserExist(userId);
         //build in users can not be updated
         methodHelper.checkBuildIn(userFromDb);
         //validate unique properties
-        uniquePropertyValidator.checkUniqueProperty(userFromDb,userRequest);
+        uniquePropertyValidator.checkUniqueProperty(userFromDb, userRequest);
         //mapping
-        User userToSave = userMapper.mapUserRequestToUser(userRequest,userFromDb.getUserRole().getRoleName());
+        User userToSave = userMapper.mapUserRequestToUser(userRequest, userFromDb.getUserRole().getRoleName());
         userToSave.setId(userId);
         User savedUser = userRepository.save(userToSave);
         return ResponseMessage.<UserResponse>builder()
@@ -102,8 +105,20 @@ public class UserService {
         String username = (String) httpServletRequest.getAttribute("username");
         User user = userRepository.findByUsername(username);
         methodHelper.checkBuildIn(user);
-        uniquePropertyValidator.checkUniqueProperty(user,userRequestWithoutPassword);
-
+        uniquePropertyValidator.checkUniqueProperty(user, userRequestWithoutPassword);
+        user.setName(userRequestWithoutPassword.getName());
+        user.setSurname(userRequestWithoutPassword.getSurname());
+        user.setSsn(userRequestWithoutPassword.getSsn());
+        user.setUsername(userRequestWithoutPassword.getUsername());
+        user.setBirthday(userRequestWithoutPassword.getBirthDay());
+        user.setBirthplace(userRequestWithoutPassword.getBirthPlace());
+        user.setEmail(userRequestWithoutPassword.getEmail());
+        user.setPhoneNumber(userRequestWithoutPassword.getPhoneNumber());
+        user.setGender(userRequestWithoutPassword.getGender());
+        userRepository.save(user);
+        return SuccessMessages.USER_UPDATE;
 
     }
+
+
 }
