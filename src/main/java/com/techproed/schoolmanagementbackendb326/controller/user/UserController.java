@@ -8,14 +8,12 @@ import com.techproed.schoolmanagementbackendb326.payload.response.abstracts.Base
 import com.techproed.schoolmanagementbackendb326.payload.response.business.ResponseMessage;
 import com.techproed.schoolmanagementbackendb326.payload.response.user.UserResponse;
 import com.techproed.schoolmanagementbackendb326.service.user.UserService;
-
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-
 import org.springframework.data.domain.Page;
 import org.springframework.http.ResponseEntity;
-
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -26,6 +24,7 @@ public class UserController {
     private final UserService userService;
 
 
+    @PreAuthorize("hasAnyAuthority('Admin')")
     @PostMapping("/save/{userRole}")
     public ResponseEntity<ResponseMessage<UserResponse>> saveUser(
             @RequestBody @Valid UserRequest userRequest,
@@ -33,6 +32,7 @@ public class UserController {
         return ResponseEntity.ok(userService.saveUser(userRequest,userRole));
     }
 
+    @PreAuthorize("hasAnyAuthority('Admin')")
     @GetMapping("/getUserByPage/{userRole}")
     public ResponseEntity<Page<UserResponse>>getUserByPage(
             @PathVariable String userRole,
@@ -44,17 +44,20 @@ public class UserController {
         return ResponseEntity.ok(userResponses);
     }
 
+    @PreAuthorize("hasAnyAuthority('Admin', 'ViceDean', 'Dean')")
     @GetMapping("/getUserById/{userId}")
     public ResponseMessage<BaseUserResponse>getUserById(@PathVariable Long userId) {
         return userService.findUserById(userId);
     }
 
+    @PreAuthorize("hasAnyAuthority('Admin', 'Dean')")
     //http://localhost:8090/user/deleteUserById/1
     @DeleteMapping("/deleteUserById/{userId}")
     public ResponseEntity<String>deleteUserById(@PathVariable Long userId) {
         return ResponseEntity.ok(userService.deleteUserById(userId));
     }
 
+    @PreAuthorize("hasAnyAuthority('Admin')")
     @PutMapping("/update/{userId}")
     public ResponseMessage<UserResponse>updateUserById(
             @RequestBody @Valid UserRequest userRequest
@@ -62,6 +65,7 @@ public class UserController {
         return userService.updateUserById(userRequest,userId);
     }
 
+    @PreAuthorize("hasAnyAuthority('Admin', 'ViceDean', 'Dean', 'Teacher')")
     @PatchMapping("/updateLoggedInUser")
     public ResponseEntity<String>updateLoggedInUser(
             @RequestBody @Valid UserRequestWithoutPassword userRequestWithoutPassword,
