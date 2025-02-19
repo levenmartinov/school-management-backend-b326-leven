@@ -47,23 +47,20 @@ public class EducationTermController {
     }
 
 
-    //TODO
-    // ummu
     @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean','Teacher')")
     @GetMapping("/getAll")
     public List<EducationTermResponse> getAllEducationTerms() {
-        //return educationTermService.getAllEducationTerms();
-        return null;
+        return educationTermService.getAllEducationTerms();
+
     }
 
 
-    //TODO
-    // esra
+
     @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean','Teacher')")
     @GetMapping("/{educationTermId}")
     public EducationTermResponse getEducationTerm(Long educationTermId) {
-        //return educationTermService.getEducationTermById(educationTermId);
-        return null;
+        return educationTermService.getEducationTermById(educationTermId);
+
     }
 
     @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean','Teacher')")
