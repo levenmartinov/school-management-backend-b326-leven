@@ -15,6 +15,7 @@ import com.techproed.schoolmanagementbackendb326.repository.business.EducationTe
 import com.techproed.schoolmanagementbackendb326.service.helper.PageableHelper;
 
 import javax.validation.Valid;
+
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.data.domain.Page;
@@ -49,16 +50,16 @@ public class EducationTermService {
         //validate request by reg/start/stop
         validateEducationTermDatesForRequest(educationTermRequest);
         //only one education term can exist in a year
-        if(educationTermRepository.existByTermAndYear(
+        if (educationTermRepository.existByTermAndYear(
                 educationTermRequest.getTerm(),
-                educationTermRequest.getStartDate().getYear())){
+                educationTermRequest.getStartDate().getYear())) {
             throw new ConflictException(ErrorMessages.EDUCATION_TERM_IS_ALREADY_EXIST_BY_TERM_AND_YEAR_MESSAGE);
         }
         //validate not to have any conflict with other education terms
         educationTermRepository.findByYear(educationTermRequest.getStartDate().getYear())
                 .forEach(educationTerm -> {
-                    if(!educationTerm.getStartDate().isAfter(educationTermRequest.getEndDate())
-                            || educationTerm.getEndDate().isBefore(educationTermRequest.getStartDate())){
+                    if (!educationTerm.getStartDate().isAfter(educationTermRequest.getEndDate())
+                            || educationTerm.getEndDate().isBefore(educationTermRequest.getStartDate())) {
                         throw new BadRequestException(ErrorMessages.EDUCATION_TERM_CONFLICT_MESSAGE);
                     }
                 });
@@ -67,11 +68,11 @@ public class EducationTermService {
 
     private void validateEducationTermDatesForRequest(EducationTermRequest educationTermRequest) {
         //reg<start
-        if(educationTermRequest.getLastRegistrationDate().isAfter(educationTermRequest.getStartDate())){
+        if (educationTermRequest.getLastRegistrationDate().isAfter(educationTermRequest.getStartDate())) {
             throw new ConflictException(ErrorMessages.EDUCATION_START_DATE_IS_EARLIER_THAN_LAST_REGISTRATION_DATE);
         }
         //end>start
-        if(educationTermRequest.getEndDate().isBefore(educationTermRequest.getStartDate())){
+        if (educationTermRequest.getEndDate().isBefore(educationTermRequest.getStartDate())) {
             throw new ConflictException(ErrorMessages.EDUCATION_END_DATE_IS_EARLIER_THAN_START_DATE);
         }
     }
@@ -102,7 +103,7 @@ public class EducationTermService {
     public Page<EducationTermResponse> getByPage(int page, int size, String sort, String type) {
         Pageable pageable = pageableHelper.getPageable(page, size, sort, type);
         //fetch paginated and sorted data from DB
-        Page<EducationTerm>educationTerms = educationTermRepository.findAll(pageable);
+        Page<EducationTerm> educationTerms = educationTermRepository.findAll(pageable);
         //use mapper
         return educationTerms.map(educationTermMapper::mapEducationTermToEducationTermResponse);
     }
