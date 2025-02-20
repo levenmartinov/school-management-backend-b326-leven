@@ -1,4 +1,3 @@
-/*
 package com.techproed.schoolmanagementbackendb326.service.validator;
 
 import com.techproed.schoolmanagementbackendb326.exception.BadRequestException;
@@ -18,4 +17,4 @@ public class TimeValidator {
         }
     }
 
-}*/
+}
