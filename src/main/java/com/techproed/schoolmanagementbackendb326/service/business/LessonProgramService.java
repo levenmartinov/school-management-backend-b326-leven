@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -39,11 +40,10 @@ public class LessonProgramService {
                 lessonProgramRequest.getStartTime(), lessonProgramRequest.getStopTime());
         //mapping
         LessonProgram lessonProgramToSave = lessonProgramMapper.mapLessonProgramRequestToLessonProgram(
-                lessonProgramRequest, lessons,educationTerm);
+                lessonProgramRequest, lessons, educationTerm);
         LessonProgram savedLessonProgram = lessonProgramRepository.save(lessonProgramToSave);
-
         return ResponseMessage.<LessonProgramResponse>
-                builder()
+                        builder()
                 .returnBody(lessonProgramMapper.mapLessonProgramToLessonProgramResponse(savedLessonProgram))
                 .httpStatus(HttpStatus.CREATED)
                 .message(SuccessMessages.LESSON_PROGRAM_SAVE)
@@ -52,8 +52,16 @@ public class LessonProgramService {
 
 
     public List<LessonProgramResponse> getAllUnassigned() {
+        return lessonProgramRepository.findByUsers_IdNull()
+                .stream()
+                .map(lessonProgramMapper::mapLessonProgramToLessonProgramResponse)
+                .collect(Collectors.toList());
+    }
 
-
-
+    public List<LessonProgramResponse> getAllAssigned() {
+        return lessonProgramRepository.findByUsers_IdNotNull()
+                .stream()
+                .map(lessonProgramMapper::mapLessonProgramToLessonProgramResponse)
+                .collect(Collectors.toList());
     }
 }

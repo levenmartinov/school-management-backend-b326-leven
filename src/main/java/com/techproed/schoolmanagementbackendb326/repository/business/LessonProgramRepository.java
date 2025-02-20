@@ -12,5 +12,4 @@ public interface LessonProgramRepository extends JpaRepository<LessonProgram, Lo
     List<LessonProgram> findByUsers_IdNull();
 
     List<LessonProgram> findByUsers_IdNotNull();
-
 }
