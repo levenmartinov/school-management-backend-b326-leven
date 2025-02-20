@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequestMapping("/lessonPrograms")
@@ -27,4 +28,10 @@ public class LessonProgramController {
             @RequestBody @Valid LessonProgramRequest lessonProgramRequest) {
         return lessonProgramService.saveLessonProgram(lessonProgramRequest);
     }
+
+    public List<LessonProgramResponse> getAllUnassignedLessonPrograms() {
+        return lessonProgramService.getAllUnassigned();
+    }
+
+
 }

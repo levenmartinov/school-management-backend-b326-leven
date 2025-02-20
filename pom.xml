@@ -17,6 +17,10 @@
     <name>school-management-backend-b326-leven</name>
     <description>school-management-backend-b326-leven</description>
 
+    <properties>
+        <org.mapstruct.version>1.6.3</org.mapstruct.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
@@ -64,6 +68,21 @@
             <groupId>io.jsonwebtoken</groupId>
             <artifactId>jjwt</artifactId>
             <version>0.9.1</version>
+        </dependency>
+
+        <!-- MapStruct Dependency ****************-->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${org.mapstruct.version}</version>
+        </dependency>
+        <!-- According to MapStruct documentation:
+        Thanks to this dependency, we will not have to configure Annotation Processor settings in IntelliJ -->
+        <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct-processor</artifactId>
+            <version>${org.mapstruct.version}</version>
+            <optional>true</optional>
         </dependency>
 
         <!-- SWAGGER ****************-->
