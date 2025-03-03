@@ -3,7 +3,10 @@ package com.techproed.schoolmanagementbackendb326.service.business;
 import com.techproed.schoolmanagementbackendb326.entity.concretes.business.EducationTerm;
 import com.techproed.schoolmanagementbackendb326.entity.concretes.business.Lesson;
 import com.techproed.schoolmanagementbackendb326.entity.concretes.business.LessonProgram;
+import com.techproed.schoolmanagementbackendb326.exception.BadRequestException;
+import com.techproed.schoolmanagementbackendb326.exception.ResourceNotFoundException;
 import com.techproed.schoolmanagementbackendb326.payload.mappers.LessonProgramMapper;
+import com.techproed.schoolmanagementbackendb326.payload.messages.ErrorMessages;
 import com.techproed.schoolmanagementbackendb326.payload.messages.SuccessMessages;
 import com.techproed.schoolmanagementbackendb326.payload.request.business.LessonProgramRequest;
 import com.techproed.schoolmanagementbackendb326.payload.response.business.LessonProgramResponse;
@@ -63,5 +66,50 @@ public class LessonProgramService {
                 .stream()
                 .map(lessonProgramMapper::mapLessonProgramToLessonProgramResponse)
                 .collect(Collectors.toList());
+    }
+
+
+    // Check if it exists in the database
+    public LessonProgram existById(Long id) {
+        return lessonProgramRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.NOT_FOUND_LESSON_PROGRAM_MESSAGE));
+    }
+
+    public ResponseMessage deleteLessonProgramById(Long id) {
+        existById(id);
+        lessonProgramRepository.deleteById(id);
+        return ResponseMessage.builder()
+                .message(SuccessMessages.LESSON_PROGRAM_DELETE)
+                .httpStatus(HttpStatus.OK)
+                .build();
+    }
+
+
+    public List<LessonProgram> getLessonProgramById(List<Long> lessonIdList) {
+        lessonIdList.forEach(this::existById);
+        List<LessonProgram> lessonProgramList = lessonProgramRepository.findAllById(lessonIdList);
+        if (lessonProgramList.isEmpty()) {
+            throw new BadRequestException(ErrorMessages.NOT_FOUND_LESSON_PROGRAM_MESSAGE_WITHOUT_ID_INFO);
+        }
+        return lessonProgramList;
+    }
+
+
+    public List<LessonProgramResponse> getAllLessonPrograms() {
+        List<LessonProgram> allLessonPrograms = lessonProgramRepository.findAll();
+        return allLessonPrograms.stream().map(lessonProgramMapper::mapLessonProgramToLessonProgramResponse).collect(Collectors.toList());
+    }
+
+
+    public LessonProgram isLessonProgramExist(Long id) {
+        return lessonProgramRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.NOT_FOUND_LESSON_IN_LIST));
+    }
+
+    public LessonProgramResponse findById(Long id) {
+
+        LessonProgram lessonProgram = isLessonProgramExist(id);
+        return lessonProgramMapper.mapLessonProgramToLessonProgramResponse(lessonProgram);
+
     }
 }

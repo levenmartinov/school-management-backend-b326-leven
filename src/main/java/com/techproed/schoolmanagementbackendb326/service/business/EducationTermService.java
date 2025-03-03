@@ -8,6 +8,7 @@ import com.techproed.schoolmanagementbackendb326.payload.mappers.EducationTermMa
 import com.techproed.schoolmanagementbackendb326.payload.messages.ErrorMessages;
 import com.techproed.schoolmanagementbackendb326.payload.messages.SuccessMessages;
 import com.techproed.schoolmanagementbackendb326.payload.request.business.EducationTermRequest;
+import com.techproed.schoolmanagementbackendb326.payload.request.business.EducationTermUpdateRequest;
 import com.techproed.schoolmanagementbackendb326.payload.response.business.EducationTermResponse;
 import com.techproed.schoolmanagementbackendb326.payload.response.business.ResponseMessage;
 import com.techproed.schoolmanagementbackendb326.repository.business.EducationTermRepository;
@@ -31,7 +32,9 @@ import java.util.stream.Collectors;
 public class EducationTermService {
 
     private final EducationTermRepository educationTermRepository;
+
     private final EducationTermMapper educationTermMapper;
+
     private final PageableHelper pageableHelper;
 
     public ResponseMessage<EducationTermResponse> save(
@@ -61,6 +64,7 @@ public class EducationTermService {
         //validate not to have any conflict with other education terms
         educationTermRepository.findByYear(educationTermRequest.getStartDate().getYear())
                 .forEach(educationTerm -> {
+                    //TODO: Exclamation mark (!) might need to be moved to the next expression.
                     if (!educationTerm.getStartDate().isAfter(educationTermRequest.getEndDate())
                             || educationTerm.getEndDate().isBefore(educationTermRequest.getStartDate())) {
                         throw new BadRequestException(ErrorMessages.EDUCATION_TERM_CONFLICT_MESSAGE);
@@ -80,19 +84,37 @@ public class EducationTermService {
         }
     }
 
+    /**
+     * For partial update, we need the whole entity to be able to validate dates.
+     * For example; if the user wants to update only the startDate, then we need to acquire the endDate from the existing entity.
+     * That's why, we map the updateDTO to updatedEntity first, then validate its dates with this method.
+     *
+     * @param educationTerm updated entity object
+     */
+    private void validateEducationTermDatesForPartialUpdate(EducationTerm educationTerm) {
+        //reg<start
+        if (educationTerm.getLastRegistrationDate().isAfter(educationTerm.getStartDate())) {
+            throw new ConflictException(ErrorMessages.EDUCATION_START_DATE_IS_EARLIER_THAN_LAST_REGISTRATION_DATE);
+        }
+        //end>start
+        if (educationTerm.getEndDate().isBefore(educationTerm.getStartDate())) {
+            throw new ConflictException(ErrorMessages.EDUCATION_END_DATE_IS_EARLIER_THAN_START_DATE);
+        }
+    }
+
     public ResponseMessage<EducationTermResponse> updateEducationTerm(
-            @Valid EducationTermRequest educationTermRequest, Long educationTermId) {
+            @Valid EducationTermUpdateRequest educationTermRequest, Long educationTermId) {
         //check if education term exist
-        isEducationTermExist(educationTermId);
+        EducationTerm foundEducationTerm = isEducationTermExist(educationTermId);
+        //update entity with partial/whole new data
+        EducationTerm updatedEducationTerm = educationTermMapper.updateEducationTermWithEducationTermUpdateRequest(educationTermRequest, foundEducationTerm);
         //validate dates
-        validateEducationTermDatesForRequest(educationTermRequest);
-        //mapping
-        EducationTerm term = educationTermMapper.mapEducationTermRequestToEducationTerm(educationTermRequest);
-        term.setId(educationTermId);
-        //return by mapping it to DTO
+        validateEducationTermDatesForPartialUpdate(updatedEducationTerm);
+        //since it has passed the validation, we can now save it into DB
+        // and return by mapping it to responseDTO
         return ResponseMessage.<EducationTermResponse>builder()
                 .message(SuccessMessages.EDUCATION_TERM_UPDATE)
-                .returnBody(educationTermMapper.mapEducationTermToEducationTermResponse(educationTermRepository.save(term)))
+                .returnBody(educationTermMapper.mapEducationTermToEducationTermResponse(educationTermRepository.save(updatedEducationTerm)))
                 .httpStatus(HttpStatus.OK)
                 .build();
     }
@@ -102,6 +124,12 @@ public class EducationTermService {
                 .orElseThrow(() -> new ResourceNotFoundException(ErrorMessages.EDUCATION_TERM_NOT_FOUND_MESSAGE));
     }
 
+    public EducationTermResponse getEducationTermById(Long educationTermId) {
+        // Validate if the education term exists in the database
+        EducationTerm educationTerm = isEducationTermExist(educationTermId);
+        // Map the entity to DTO and return the response
+        return educationTermMapper.mapEducationTermToEducationTermResponse(educationTerm);
+    }
 
     public Page<EducationTermResponse> getByPage(int page, int size, String sort, String type) {
         Pageable pageable = pageableHelper.getPageable(page, size, sort, type);
@@ -121,24 +149,8 @@ public class EducationTermService {
     }
 
     public List<EducationTermResponse> getAllEducationTerms() {
-
         List<EducationTerm> allEducationTerms = educationTermRepository.findAll();
-
-        return allEducationTerms.stream()
-                .map(educationTermMapper :: mapEducationTermToEducationTermResponse)
-                .collect(Collectors.toList());
-
+        return allEducationTerms.stream().map(educationTermMapper::mapEducationTermToEducationTermResponse).collect(Collectors.toList());
     }
 
-    public EducationTermResponse getEducationTermById(Long educationTermId) {
-
-        // Validate if the education term exists in the database
-        EducationTerm educationTerm =isEducationTermExist(educationTermId);
-
-        // Map the entity to DTO and return the response
-        return educationTermMapper.mapEducationTermToEducationTermResponse(educationTerm);
-
-
-
-    }
 }
