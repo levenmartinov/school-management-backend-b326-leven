@@ -18,6 +18,7 @@ public class MethodHelper {
 
     private final UserRepository userRepository;
 
+    private final ContactMessageRepository contactMessageRepository;
 
     public User isUserExist(Long id) {
         return userRepository.findById(id)
@@ -39,8 +40,6 @@ public class MethodHelper {
         return user;
     }
 
-    //contactapp
-    private final ContactMessageRepository contactMessageRepository;
 
     public ContactMessage checkContactMessageExistById(
             Long id) {
@@ -58,4 +57,9 @@ public class MethodHelper {
     }
 
 
+    public void checkIsAdvisor(User user) {
+        if(!user.getIsAdvisor()){
+            throw new BadRequestException(String.format(ErrorMessages.NOT_ADVISOR_TEACHER_MESSAGE, user.getUsername()));
+        }
+    }
 }
