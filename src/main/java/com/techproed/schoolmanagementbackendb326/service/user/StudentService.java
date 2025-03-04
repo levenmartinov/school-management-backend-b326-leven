@@ -26,7 +26,6 @@ public class StudentService {
 
     private final UserMapper userMapper;
 
-    private final UserRepository studentRepository;
 
     private final LessonProgramService lessonProgramService;
 

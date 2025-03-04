@@ -8,9 +8,9 @@ import com.techproed.schoolmanagementbackendb326.entity.concretes.business.Lesso
 import com.techproed.schoolmanagementbackendb326.entity.concretes.business.Meet;
 import com.techproed.schoolmanagementbackendb326.entity.concretes.business.StudentInfo;
 import com.techproed.schoolmanagementbackendb326.entity.enums.Gender;
+
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Set;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -25,6 +25,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -35,26 +36,26 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder
-@Table(name="t_user")
+@Table(name = "t_user")
 public class User {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column(unique=true)
+    @Column(unique = true)
     private String username;
-    @Column(unique=true)
+    @Column(unique = true)
     private String ssn;
     private String name;
     private String surname;
-    @JsonFormat(shape = JsonFormat.Shape.STRING,pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate birthday;
     private String birthplace;
     @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
     private String password;
-    @Column(unique=true)
+    @Column(unique = true)
     private String phoneNumber;
-    @Column(unique=true)
+    @Column(unique = true)
     private String email;
     private Boolean buildIn;
     private String motherName;
@@ -70,8 +71,8 @@ public class User {
     @JsonProperty(access = Access.WRITE_ONLY)
     private UserRole userRole;
 
-    @OneToMany(mappedBy = "teacher",cascade = CascadeType.REMOVE)
-    private List<StudentInfo>studentInfos;
+    @OneToMany(mappedBy = "teacher", cascade = CascadeType.REMOVE)
+    private List<StudentInfo> studentInfos;
 
     @ManyToMany
     @JoinTable(
@@ -79,14 +80,12 @@ public class User {
             joinColumns = @JoinColumn(name = "user_id"),
             inverseJoinColumns = @JoinColumn(name = "lesson_program_id")
     )
-    private Set<LessonProgram>lessonProgramList;
+    private List<LessonProgram> lessonProgramList;
 
 
     @JsonIgnore
     @ManyToMany(mappedBy = "studentList")
-    private List<Meet>meetList;
-
-
+    private List<Meet> meetList;
 
 
 }

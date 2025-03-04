@@ -26,7 +26,7 @@ public class LessonProgramController {
         return lessonProgramService.saveLessonProgram(lessonProgramRequest);
     }
 
-    @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean')")
+    /*@PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean')")
     @GetMapping("/getAll")
     public List<LessonProgramResponse> getAllLessonPrograms() {
         return lessonProgramService.getAllLessonPrograms();
@@ -38,7 +38,7 @@ public class LessonProgramController {
     public LessonProgramResponse getLessonProgramById(@PathVariable Long id) {
         return lessonProgramService.findById(id);
 
-    }
+    }*/
 
     @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean','Teacher','Student')")
     @GetMapping("/getAllUnassigned")

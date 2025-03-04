@@ -95,7 +95,7 @@ public class LessonProgramService {
     }
 
 
-    public List<LessonProgramResponse> getAllLessonPrograms() {
+   /* public List<LessonProgramResponse> getAllLessonPrograms() {
         List<LessonProgram> allLessonPrograms = lessonProgramRepository.findAll();
         return allLessonPrograms.stream().map(lessonProgramMapper::mapLessonProgramToLessonProgramResponse).collect(Collectors.toList());
     }
@@ -111,5 +111,5 @@ public class LessonProgramService {
         LessonProgram lessonProgram = isLessonProgramExist(id);
         return lessonProgramMapper.mapLessonProgramToLessonProgramResponse(lessonProgram);
 
-    }
+    }*/
 }
