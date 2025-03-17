@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalTime;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 @Component
@@ -20,7 +21,7 @@ public class TimeValidator {
         }
     }
 
-    public void checkDuplicateLessonProgram(Set<LessonProgram> lessonPrograms) {
+    public void checkDuplicateLessonProgram(List<LessonProgram> lessonPrograms) {
         Set<String> uniqueLessonProgramDays = new HashSet<>();
         Set<LocalTime> existingLessonProgramStartTimes = new HashSet<>();
         Set<LocalTime> existingLessonProgramStopTimes = new HashSet<>();

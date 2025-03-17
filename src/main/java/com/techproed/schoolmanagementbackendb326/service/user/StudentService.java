@@ -121,6 +121,7 @@ public class StudentService {
         //TODO user LessonProgramDuplicationHelper here
         studentLessonProgram.addAll(lessonProgramFromDto);
 
+        return null;
 
     }
 

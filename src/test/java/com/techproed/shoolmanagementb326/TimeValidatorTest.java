@@ -13,6 +13,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
+
 class TimeValidatorTest {
 
 
@@ -33,6 +34,7 @@ class TimeValidatorTest {
         lessonPrograms.add(new LessonProgram(Day.MONDAY, LocalTime.of(9, 0), LocalTime.of(12, 0)));
         assertThrows(BadRequestException.class, () -> timeValidator.checkDuplicateLessonProgram(lessonPrograms));
     }
+
 
     @Test
     void testOverlappingTimesThrowsException() {
