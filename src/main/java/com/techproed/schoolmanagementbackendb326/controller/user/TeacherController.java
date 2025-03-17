@@ -7,9 +7,11 @@ import com.techproed.schoolmanagementbackendb326.payload.response.user.StudentRe
 import com.techproed.schoolmanagementbackendb326.payload.response.user.UserResponse;
 import com.techproed.schoolmanagementbackendb326.service.user.TeacherService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
-
+import org.springframework.web.bind.annotation.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
@@ -53,5 +55,24 @@ public class TeacherController {
         return teacherService.addLessonProgram(lessonProgram);
     }
 
+    @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean')")
+    @DeleteMapping("/deleteTeacherById/{teacherId}")
+    public ResponseMessage<UserResponse> deleteTeacherById(@PathVariable Long teacherId){
+        return teacherService.deleteTeacherById(teacherId);
+    }
+
+
+    @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean')")
+    @GetMapping("/getAllTeacherByPage")
+    public ResponseEntity<Page<UserResponse>> getAllTeacherByPage(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "10") int size,
+            @RequestParam(value = "sort", defaultValue = "name") String sort,
+            @RequestParam(value = "type", defaultValue = "desc") String type) {
+
+        Page<UserResponse> teacherResponses = teacherService.getAllTeacherByPage(page, size, sort, type);
+
+        return ResponseEntity.ok(teacherResponses);
+    }
 
 }

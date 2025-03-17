@@ -14,10 +14,14 @@ import com.techproed.schoolmanagementbackendb326.repository.user.UserRepository;
 import com.techproed.schoolmanagementbackendb326.service.business.LessonProgramService;
 import com.techproed.schoolmanagementbackendb326.service.helper.LessonProgramDuplicationHelper;
 import com.techproed.schoolmanagementbackendb326.service.helper.MethodHelper;
+import com.techproed.schoolmanagementbackendb326.service.helper.PageableHelper;
 import com.techproed.schoolmanagementbackendb326.service.validator.UniquePropertyValidator;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
@@ -39,6 +43,8 @@ public class TeacherService {
     private final LessonProgramService lessonProgramService;
 
     private final LessonProgramDuplicationHelper lessonProgramDuplicationHelper;
+
+    private final PageableHelper pageableHelper;
 
 
     public ResponseMessage<UserResponse> saveTeacher(TeacherRequest teacherRequest) {
@@ -111,5 +117,43 @@ public class TeacherService {
                 .message(SuccessMessages.LESSON_PROGRAM_ADD_TO_TEACHER)
                 .returnBody(userMapper.mapUserToUserResponse(savedTeacher))
                 .build();
+    }
+
+    @Transactional
+    public ResponseMessage<UserResponse> deleteTeacherById(Long teacherId) {
+        User teacher = methodHelper.isUserExist(teacherId);
+        methodHelper.checkUserRole(teacher, RoleType.TEACHER);
+
+        userRepository.removeAdvisorFromStudents(teacherId);
+        userRepository.delete(teacher);
+
+        return ResponseMessage.<UserResponse>builder()
+                .message(SuccessMessages.ADVISOR_TEACHER_DELETE)
+                .httpStatus(HttpStatus.OK)
+                .build();
+    }
+
+    //second solution but this solution hits DB more than the first solution
+    //also fetch data from DB to service layer
+    @Transactional
+    public String deleteTeacherById2(
+            Long teacherId) {
+        User teacher = methodHelper.isUserExist(teacherId);
+        methodHelper.checkUserRole(teacher, RoleType.TEACHER);
+        List<User> students = userRepository.findByAdvisorTeacherId(teacherId);
+        if (!students.isEmpty()) {
+            students.forEach(student -> student.setAdvisorTeacherId(null));
+            userRepository.saveAll(students);
+        }
+        userRepository.delete(teacher);
+        return SuccessMessages.ADVISOR_TEACHER_DELETE;
+    }
+
+
+    public Page<UserResponse> getAllTeacherByPage(int page, int size, String sort, String type) {
+        Pageable pageable = pageableHelper.getPageable(page, size, sort, type);
+        Page<User> teachers = userRepository.findAllByUserRole(RoleType.TEACHER, pageable);
+
+        return teachers.map(userMapper::mapUserToUserResponse);
     }
 }

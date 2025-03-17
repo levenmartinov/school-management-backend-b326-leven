@@ -5,6 +5,8 @@ import com.techproed.schoolmanagementbackendb326.entity.enums.RoleType;
 import com.techproed.schoolmanagementbackendb326.exception.ResourceNotFoundException;
 import com.techproed.schoolmanagementbackendb326.payload.messages.ErrorMessages;
 import com.techproed.schoolmanagementbackendb326.payload.request.abstracts.BaseUserRequest;
+import com.techproed.schoolmanagementbackendb326.payload.request.user.StudentRequest;
+import com.techproed.schoolmanagementbackendb326.payload.request.user.StudentUpdateRequest;
 import com.techproed.schoolmanagementbackendb326.payload.request.user.UserRequest;
 import com.techproed.schoolmanagementbackendb326.payload.response.user.StudentResponse;
 import com.techproed.schoolmanagementbackendb326.payload.response.user.UserResponse;
@@ -105,4 +107,43 @@ public class UserMapper {
                 .isActive(student.isActive())
                 .build();
     }
+
+    public User mapStudentUpdateRequestToUser(StudentUpdateRequest studentUpdateRequest) {
+        return User.builder()
+                .username(studentUpdateRequest.getUsername())
+                .name(studentUpdateRequest.getName())
+                .ssn(studentUpdateRequest.getSsn())
+                .userRole(userRoleService.getUserRole(RoleType.STUDENT))
+                .surname(studentUpdateRequest.getSurname())
+                .birthday(studentUpdateRequest.getBirthDay())
+                .birthplace(studentUpdateRequest.getBirthPlace())
+                .phoneNumber(studentUpdateRequest.getPhoneNumber())
+                .gender(studentUpdateRequest.getGender())
+                .email(studentUpdateRequest.getEmail())
+                .fatherName(studentUpdateRequest.getFatherName())
+                .motherName(studentUpdateRequest.getMotherName())
+                .build();
+    }
+
+    /*public User mapStudentRequestToUser(
+            StudentRequest studentRequest) {
+        return User.builder()
+                .username(studentRequest.getUsername())
+                .name(studentRequest.getName())
+                .surname(studentRequest.getSurname())
+                .password(passwordEncoder.encode(studentRequest.getPassword()))
+                .birthday(studentRequest.getBirthDay())
+                .ssn(studentRequest.getSsn())
+                .birthplace(studentRequest.getBirthPlace())
+                .phoneNumber(studentRequest.getPhoneNumber())
+                .gender(studentRequest.getGender())
+                .email(studentRequest.getEmail())
+                .buildIn(false)
+                .motherName(studentRequest.getMotherName())
+                .fatherName(studentRequest.getFatherName())
+                .advisorTeacherId(studentRequest.getAdvisorTeacherId())
+                .userRole(userRoleService.getUserRole(RoleType.STUDENT))
+                .passwordHistory(new ArrayList<>())
+                .build();
+    }*/
 }
