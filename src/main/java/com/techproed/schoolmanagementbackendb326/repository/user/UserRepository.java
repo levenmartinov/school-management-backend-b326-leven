@@ -8,6 +8,9 @@ import org.springframework.data.jpa.repository.Query;
 
 import org.springframework.stereotype.Repository;
 
+import java.util.Arrays;
+import java.util.List;
+
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
 
@@ -33,5 +36,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("select max (u.studentNumber) from User u")
     int getMaxStudentNumber();
 
+
+    List<User> findByAdvisorTeacherId(Long advisorTeacherId);
 
 }
