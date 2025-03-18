@@ -35,33 +35,29 @@ public class StudentController {
         return ResponseEntity.ok(studentService.updateStudent(httpServletRequest, studentUpdateRequest));
     }
 
-    // TODO furkan fix this bug.
-    // when we update teacher by manager, fathername and mother name saved always NULL in db.
+
     @PreAuthorize("hasAnyAuthority('Admin')")
     @PutMapping("/updateByAdmin/{studentId}")
-    public ResponseMessage<StudentResponse>updateStudentByManager(
+    public ResponseMessage<StudentResponse> updateStudentByManager(
             @PathVariable Long studentId,
             @RequestBody @Valid StudentRequest studentRequest) {
-        return studentService.updateStudentByManager(studentId,studentRequest);
+        return studentService.updateStudentByManager(studentId, studentRequest);
     }
 
-    //TODO Ertugrul
     @PreAuthorize("hasAnyAuthority('Admin','Dean','ViceDean')")
     @GetMapping("/changeStatus")
     public ResponseMessage changeStatus(@RequestParam Long id,
-                                        @RequestParam boolean status){
-        //return studentService.changeStatus(id,status);
-        return null;
+                                        @RequestParam boolean status) {
+        return studentService.changeStatus(id, status);
+
     }
 
-    @PreAuthorize("hasAnyAuthority('Student')")
-    @GetMapping("/addLessonProgram")
-    public ResponseMessage<StudentResponse>addLessonProgram(
+
+    public ResponseMessage<StudentResponse> addLessonProgram(
             HttpServletRequest httpServletRequest,
-            @RequestBody @Valid AddLessonProgramForStudent addLessonProgramForStudent){
-        return studentService.addLessonProgram(httpServletRequest,addLessonProgramForStudent);
+            @RequestBody @Valid AddLessonProgramForStudent addLessonProgramForStudent) {
+        return studentService.addLessonProgram(httpServletRequest, addLessonProgramForStudent);
     }
-
 
 
 }

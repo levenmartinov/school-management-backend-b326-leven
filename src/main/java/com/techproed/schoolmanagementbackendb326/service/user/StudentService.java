@@ -12,6 +12,7 @@ import com.techproed.schoolmanagementbackendb326.payload.response.business.Respo
 import com.techproed.schoolmanagementbackendb326.payload.response.user.StudentResponse;
 import com.techproed.schoolmanagementbackendb326.repository.user.UserRepository;
 import com.techproed.schoolmanagementbackendb326.service.business.LessonProgramService;
+import com.techproed.schoolmanagementbackendb326.service.helper.LessonProgramDuplicationHelper;
 import com.techproed.schoolmanagementbackendb326.service.helper.MethodHelper;
 import com.techproed.schoolmanagementbackendb326.service.validator.TimeValidator;
 import com.techproed.schoolmanagementbackendb326.service.validator.UniquePropertyValidator;
@@ -33,12 +34,14 @@ public class StudentService {
 
     private final UserMapper userMapper;
 
-
     private final LessonProgramService lessonProgramService;
 
     private final TimeValidator timeValidator;
 
     private final UserRepository userRepository;
+
+    private final LessonProgramDuplicationHelper lessonProgramDuplicationHelper;
+
 
     public ResponseMessage<StudentResponse> save(StudentRequest studentRequest) {
         //does advisor teacher exist in DB
@@ -119,10 +122,26 @@ public class StudentService {
                 lessonProgramService.getLessonProgramById(addLessonProgramForStudent.getLessonProgramId());
         //existing lesson programs of student
         List<LessonProgram> studentLessonProgram = loggedInUser.getLessonProgramList();
-        //TODO user LessonProgramDuplicationHelper here
+        lessonProgramDuplicationHelper.removeDuplicates(lessonProgramFromDto, studentLessonProgram);
         studentLessonProgram.addAll(lessonProgramFromDto);
         return null;
     }
 
+    public ResponseMessage changeStatus(Long id, boolean status) {
 
+        User student = methodHelper.isUserExist(id);
+
+        methodHelper.checkUserRole(student, RoleType.STUDENT);
+
+        student.setActive(status);
+
+        User updateStudentUser = userRepository.save(student);
+
+        return ResponseMessage.<StudentResponse>builder()
+                .message(SuccessMessages.STUDENT_UPDATE)
+                .returnBody(userMapper.mapUserToStudentResponse(updateStudentUser))
+                .httpStatus(HttpStatus.OK)
+                .build();
+
+    }
 }

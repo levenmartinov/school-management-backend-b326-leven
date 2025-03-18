@@ -7,6 +7,7 @@ import com.techproed.schoolmanagementbackendb326.service.business.MeetingService
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,6 +21,7 @@ import java.util.List;
 public class MeetingController {
 
     public final MeetingService meetingService;
+
 
     //TODO bu zamana kadar return olarak verilen response message icindeki
     //response status calismiyor. Bunu asagidaki annotation ile giderebilirirz.
@@ -41,26 +43,23 @@ public class MeetingController {
         return meetingService.update(meetingRequest, meetingId, httpServletRequest);
     }
 
-    //TODO furkan
+
     @PreAuthorize("hasAnyAuthority('Admin','Teacher')")
     @DeleteMapping("/delete/{meetingId}")
-    public ResponseMessage deleteById(@PathVariable Long meetingId) {
-        //return meetingService.deleteById(meetingId);
-        return null;
+    public ResponseEntity<String> deleteById(@PathVariable Long meetingId, HttpServletRequest httpServletRequest) {
+        return ResponseEntity.ok(meetingService.deleteById(meetingId, httpServletRequest));
     }
 
-    //TODO neslihan
     @PreAuthorize("hasAnyAuthority('Teacher')")
     @GetMapping("/getAllByPageTeacher")
-    public Page<MeetingResponse> getAllByPageTeacher(
+    public ResponseEntity<ResponseMessage<Page<MeetingResponse>>> getAllByPageTeacher(
             HttpServletRequest httpServletRequest,
             @RequestParam(value = "page", defaultValue = "0") int page,
             @RequestParam(value = "size", defaultValue = "10") int size) {
-        //return meetingService.getAllByPageTeacher(page,size,httpServletRequest);
-        return null;
+        return meetingService.getAllByPageTeacher(page, size, httpServletRequest);
     }
 
-    //TODO edip
+    //TODO SAMET
     @PreAuthorize("hasAnyAuthority('Teacher','Student')")
     @GetMapping("/getAll")
     public List<MeetingResponse> getAllMeetings(HttpServletRequest httpServletRequest) {
@@ -68,7 +67,7 @@ public class MeetingController {
         return null;
     }
 
-    //TODO ismail
+    //TODO SAMET
     @PreAuthorize("hasAnyAuthority('Admin')")
     @GetMapping("/getAllByPage")
     public Page<MeetingResponse> getAllByPage(

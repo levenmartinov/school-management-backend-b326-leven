@@ -45,7 +45,7 @@
         <dependency>
             <groupId>org.postgresql</groupId>
             <artifactId>postgresql</artifactId>
-            <version>42.6.0</version>
+
             <scope>runtime</scope>
         </dependency>
         <dependency>
@@ -69,7 +69,6 @@
             <artifactId>jjwt</artifactId>
             <version>0.9.1</version>
         </dependency>
-
         <!-- MapStruct Dependency ****************-->
         <dependency>
             <groupId>org.mapstruct</groupId>
@@ -85,12 +84,13 @@
             <optional>true</optional>
         </dependency>
 
+
         <!-- SWAGGER ****************-->
-        <!--    <dependency>-->
-        <!--      <groupId>org.springdoc</groupId>-->
-        <!--      <artifactId>springdoc-openapi-ui</artifactId>-->
-        <!--      <version>1.6.9</version>-->
-        <!--    </dependency>-->
+        <dependency>
+            <groupId>org.springdoc</groupId>
+            <artifactId>springdoc-openapi-ui</artifactId>
+            <version>1.6.9</version>
+        </dependency>
 
     </dependencies>
 
