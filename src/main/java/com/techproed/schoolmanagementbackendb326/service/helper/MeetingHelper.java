@@ -1,13 +1,17 @@
 package com.techproed.schoolmanagementbackendb326.service.helper;
 
 import com.techproed.schoolmanagementbackendb326.entity.concretes.business.Meet;
+import com.techproed.schoolmanagementbackendb326.entity.concretes.user.User;
 import com.techproed.schoolmanagementbackendb326.entity.enums.RoleType;
+import com.techproed.schoolmanagementbackendb326.exception.BadRequestException;
 import com.techproed.schoolmanagementbackendb326.exception.ConflictException;
+import com.techproed.schoolmanagementbackendb326.exception.ResourceNotFoundException;
 import com.techproed.schoolmanagementbackendb326.payload.messages.ErrorMessages;
 import com.techproed.schoolmanagementbackendb326.repository.business.MeetingRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
+import javax.servlet.http.HttpServletRequest;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.HashSet;
@@ -59,4 +63,17 @@ public class MeetingHelper {
         }
     }
 
+    public Meet isMeetingExistById(Long id) {
+        return meetingRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException(String.format(ErrorMessages.MEET_NOT_FOUND_MESSAGE, id)));
+    }
+
+    public void isMeetingMatchedWithTeacher(Meet meeting, HttpServletRequest httpServletRequest) {
+        String username = (String) httpServletRequest.getAttribute("username");
+        User teacher = methodHelper.loadByUsername(username);
+        methodHelper.checkIsAdvisor(teacher);
+        if (!meeting.getAdvisoryTeacher().getId().equals(teacher.getId())) {
+            throw new BadRequestException(ErrorMessages.NOT_PERMITTED_METHOD_MESSAGE);
+        }
+    }
 }

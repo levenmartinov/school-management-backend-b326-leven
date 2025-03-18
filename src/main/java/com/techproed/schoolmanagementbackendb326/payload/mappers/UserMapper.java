@@ -125,7 +125,7 @@ public class UserMapper {
                 .build();
     }
 
-    /*public User mapStudentRequestToUser(
+    public User mapStudentRequestToUser(
             StudentRequest studentRequest) {
         return User.builder()
                 .username(studentRequest.getUsername())
@@ -143,7 +143,6 @@ public class UserMapper {
                 .fatherName(studentRequest.getFatherName())
                 .advisorTeacherId(studentRequest.getAdvisorTeacherId())
                 .userRole(userRoleService.getUserRole(RoleType.STUDENT))
-                .passwordHistory(new ArrayList<>())
                 .build();
-    }*/
+    }
 }

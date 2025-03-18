@@ -70,4 +70,8 @@ public class MethodHelper {
         }
     }
 
+    public List<User> getUserList(List<Long> userIdList) {
+        return userRepository.findByUserIdList(userIdList);
+    }
+
 }

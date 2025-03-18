@@ -50,4 +50,8 @@ public interface UserRepository extends JpaRepository<User, Long> {
 
     Page<User> findAllByUserRole(RoleType roleType, Pageable pageable);
 
+    @Query("select u from User u where u.id IN :userIdList")
+    List<User>findByUserIdList(List<Long> userIdList);
+
+
 }
